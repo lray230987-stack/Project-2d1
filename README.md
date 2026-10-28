@@ -11,6 +11,9 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rb;
     private Vector2 moveInput;
 
+    // 마지막으로 바라본 방향
+    public Vector2 FacingDirection { get; private set; } = Vector2.down;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -34,6 +37,15 @@ public class PlayerController : MonoBehaviour
 
         // 대각선 이동 속도가 더 빨라지지 않도록 보정
         moveInput = moveInput.normalized;
+
+        //실제로 이동할 때만 바라보는 방향을 갱신
+        if(moveInput != Vector2.zero)
+        {
+            if (Mathf.Abs(moveInput.x) > Mathf.Abs(moveInput.y))
+                FacingDirection = new Vector2(Mathf.Sign(moveInput.x), 0f);
+            else
+                FacingDirection = new Vector2(0f, Mathf.Sign(moveInput.y));
+        }
     }
 
     private void FixedUpdate()
