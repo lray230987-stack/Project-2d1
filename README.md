@@ -3,41 +3,26 @@
 
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody2D))]
-public class PlayerController : MonoBehaviour
+public class EnemyHealth : MonoBehaviour
 {
-    [SerializeField] private float moveSpeed = 5f;
+    [SerializeField] private int maxHealth = 3;
 
-    private Rigidbody2D rb;
-    private Vector2 moveInput;
+    private int currentHealth;
 
     private void Awake()
     {
-        rb = GetComponent<Rigidbody2D>();
+        currentHealth = maxHealth;
     }
 
-    private void Update()
+    public void TakeDamage(int damage)
     {
-        moveInput = Vector2.zero;
+        currentHealth -= damage;
 
-        if (Input.GetKey(KeyCode.UpArrow))
-            moveInput.y += 1f;
+        Debug.Log("적이 피해를 입었습니다! 남은 체력: " + currentHealth);
 
-        if (Input.GetKey(KeyCode.DownArrow))
-            moveInput.y -= 1f;
-
-        if (Input.GetKey(KeyCode.LeftArrow))
-            moveInput.x -= 1f;
-
-        if (Input.GetKey(KeyCode.RightArrow))
-            moveInput.x += 1f;
-
-        // 대각선 이동 속도가 더 빨라지지 않도록 보정
-        moveInput = moveInput.normalized;
-    }
-
-    private void FixedUpdate()
-    {
-        rb.linearVelocity = moveInput * moveSpeed;
+        if(currentHealth <= 0)
+        {
+            Destroy(gameObject);
+        }
     }
 }
