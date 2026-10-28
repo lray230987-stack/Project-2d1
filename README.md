@@ -1,7 +1,7 @@
 # Project-2d1
 2d_top_down_action_roguelike, pc_single_play, Unity2D_C#
 
-using UnityEngine;
+<!-- using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
@@ -40,4 +40,4 @@ public class PlayerController : MonoBehaviour
     {
         rb.linearVelocity = moveInput * moveSpeed;
     }
-}
+} -->
