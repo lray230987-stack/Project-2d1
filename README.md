@@ -3,41 +3,51 @@
 
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody2D))]
-public class PlayerController : MonoBehaviour
+public class PlayerAttack : MonoBehaviour
 {
-    [SerializeField] private float moveSpeed = 5f;
+    [SerializeField] private Transform attackPoint;
+    [SerializeField] private float attackRange = 1f;
+    [SerializeField] private int attackDamage = 1;
+    [SerializeField] private float attackCooldown = 0.4f;
+    [SerializeField] private LayerMask enemyLayers;
 
-    private Rigidbody2D rb;
-    private Vector2 moveInput;
-
-    private void Awake()
-    {
-        rb = GetComponent<Rigidbody2D>();
-    }
+    private float nextAttackTime;
 
     private void Update()
     {
-        moveInput = Vector2.zero;
-
-        if (Input.GetKey(KeyCode.UpArrow))
-            moveInput.y += 1f;
-
-        if (Input.GetKey(KeyCode.DownArrow))
-            moveInput.y -= 1f;
-
-        if (Input.GetKey(KeyCode.LeftArrow))
-            moveInput.x -= 1f;
-
-        if (Input.GetKey(KeyCode.RightArrow))
-            moveInput.x += 1f;
-
-        // 대각선 이동 속도가 더 빨라지지 않도록 보정
-        moveInput = moveInput.normalized;
+        if(Input.GetKeyDown(KeyCode.Space) && Time.time >= nextAttackTime)
+        {
+            Attack();
+            nextAttackTime = Time.time + attackCooldown;
+        }
     }
 
-    private void FixedUpdate()
+    private void Attack()
     {
-        rb.linearVelocity = moveInput * moveSpeed;
+        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(
+            attackPoint.position,
+            attackRange,
+            enemyLayers
+        );
+
+        foreach(Collider2D enemy in hitEnemies)
+        {
+            EnemyHealth health = enemy.GetComponent<EnemyHealth>();
+
+            if(health != null)
+            {
+                health.TakeDamage(attackDamage);
+            }
+        }
+        Debug.Log("공격!");
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if(attackPoint != null)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(attackPoint.position, attackRange);
+        }
     }
 }
