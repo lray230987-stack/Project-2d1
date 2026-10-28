@@ -38,13 +38,10 @@ public class PlayerController : MonoBehaviour
         // 대각선 이동 속도가 더 빨라지지 않도록 보정
         moveInput = moveInput.normalized;
 
-        //실제로 이동할 때만 바라보는 방향을 갱신
+        // 이동 방향을 그대로 바라보는 방향으로 사용
         if(moveInput != Vector2.zero)
         {
-            if (Mathf.Abs(moveInput.x) > Mathf.Abs(moveInput.y))
-                FacingDirection = new Vector2(Mathf.Sign(moveInput.x), 0f);
-            else
-                FacingDirection = new Vector2(0f, Mathf.Sign(moveInput.y));
+            FacingDirection = moveInput;
         }
     }
 
