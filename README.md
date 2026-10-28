@@ -10,11 +10,25 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] private int attackDamage = 1;
     [SerializeField] private float attackCooldown = 0.4f;
     [SerializeField] private LayerMask enemyLayers;
+    [SerializeField] private float attackOffset = 0.8f;
 
     private float nextAttackTime;
+    private PlayerController playerController;
+
+    private void Awake()
+    {
+        playerController = GetComponent<PlayerController>();
+    }
 
     private void Update()
     {
+        if(playerController != null && attackPoint != null)
+        {
+            //공격 위치를 플레이어가 바라보는 방향으로 이동
+            attackPoint.localPosition =
+                (Vector3)(playerController.FacingDirection * attackOffset);
+        }
+
         if(Input.GetKeyDown(KeyCode.Space) && Time.time >= nextAttackTime)
         {
             Attack();
@@ -35,9 +49,7 @@ public class PlayerAttack : MonoBehaviour
             EnemyHealth health = enemy.GetComponent<EnemyHealth>();
 
             if(health != null)
-            {
                 health.TakeDamage(attackDamage);
-            }
         }
         Debug.Log("공격!");
     }
